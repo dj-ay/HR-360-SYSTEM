@@ -88,7 +88,7 @@ export default function Login() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-linear-to-br from-slate-900 to-slate-800">
+    <div className="min-h-screen flex items-center justify-center bg-[url('https://wallpaperaccess.com/full/15682437.png')] bg-cover bg-center">
       <div className="w-full max-w-md p-8 bg-white rounded-lg shadow-lg">
         <h1 className="text-3xl font-bold text-center mb-8 text-slate-900">HR-360</h1>
         <div className="flex justify-center mb-6">
