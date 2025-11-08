@@ -138,6 +138,20 @@ export default function HRInterviews() {
     setCandidates(updatedCandidates)
     localStorage.setItem("candidateProfiles", JSON.stringify(updatedCandidates))
 
+    // Send notification to candidate with credentials
+    const notification = {
+      id: Date.now(),
+      userId: interview.candidateEmail,
+      title: "Congratulations! You have been hired",
+      message: `You have been successfully hired for the position of ${interview.jobTitle}.\n\nYour login credentials:\nEmail: ${generatedEmail}\nPassword: ${generatedPassword}\n\nPlease use these credentials to log in to the HR-360 system as an employee.`,
+      createdAt: new Date().toISOString(),
+      type: "hire"
+    }
+
+    const notifications = JSON.parse(localStorage.getItem("notifications") || "[]")
+    notifications.push(notification)
+    localStorage.setItem("notifications", JSON.stringify(notifications))
+
     // Show success message with credentials
     alert(`Candidate hired successfully!\n\nEmail: ${generatedEmail}\nPassword: ${generatedPassword}\n\nPlease share these credentials with the candidate.`)
   }

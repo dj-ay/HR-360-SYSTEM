@@ -254,13 +254,28 @@ export default function CandidateDashboard() {
               >
                 {profileComplete ? 'Update Profile' : 'Complete Profile'}
               </button>
-              <button className="bg-green-600 text-white p-4 rounded-lg hover:bg-green-700">
+              <button
+                onClick={() => router.push("/browse-jobs")}
+                className="bg-green-600 text-white p-4 rounded-lg hover:bg-green-700"
+              >
                 Browse Jobs
               </button>
-              <button className="bg-yellow-600 text-white p-4 rounded-lg hover:bg-yellow-700">
+              <button
+                onClick={() => {
+                  if (profileComplete) {
+                    router.push("/candidate-profile") // Show applications in profile or create separate page
+                  } else {
+                    alert("Please complete your profile first to view applications.")
+                  }
+                }}
+                className="bg-yellow-600 text-white p-4 rounded-lg hover:bg-yellow-700"
+              >
                 View Applications
               </button>
-              <button className="bg-purple-600 text-white p-4 rounded-lg hover:bg-purple-700">
+              <button
+                onClick={() => router.push("/candidate-profile")}
+                className="bg-purple-600 text-white p-4 rounded-lg hover:bg-purple-700"
+              >
                 Profile Settings
               </button>
             </div>

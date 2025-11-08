@@ -90,104 +90,11 @@ export default function EmployeeDashboard() {
     alert("Attendance marked successfully!")
   }
 
-  const applyLeave = () => {
-    if (!employeeData) return
 
-    const leaveRequest = {
-      id: Date.now(),
-      employeeId: employeeData.id,
-      employeeName: employeeData.name,
-      type: 'Casual Leave',
-      startDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
-      endDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
-      reason: 'Personal reasons',
-      status: 'Pending',
-      appliedDate: new Date().toISOString()
-    }
 
-    const allLeaveRequests = JSON.parse(localStorage.getItem("leaveRequests") || "[]")
-    allLeaveRequests.push(leaveRequest)
-    localStorage.setItem("leaveRequests", JSON.stringify(allLeaveRequests))
 
-    const updatedLeaves = [...leaveRequests, leaveRequest]
-    setLeaveRequests(updatedLeaves)
 
-    alert("Leave request submitted successfully!")
-  }
 
-  const viewPayslip = () => {
-    if (!employeeData) return
-
-    const payslipInfo = `
-PAYSLIP - ${new Date().toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}
-
-Employee: ${employeeData.name}
-Employee ID: EMP${employeeData.id}
-Department: ${employeeData.department}
-Designation: ${employeeData.designation}
-
-Basic Salary: $${employeeData.salary || payroll?.amount || 50000}
-HRA: $${Math.round((employeeData.salary || payroll?.amount || 50000) * 0.3)}
-Conveyance: $1920
-Medical: $1250
-LTA: $1000
-
-Gross Salary: $${(employeeData.salary || payroll?.amount || 50000) + Math.round((employeeData.salary || payroll?.amount || 50000) * 0.3) + 1920 + 1250 + 1000}
-
-Deductions:
-PF: $${Math.round((employeeData.salary || payroll?.amount || 50000) * 0.12)}
-Professional Tax: $200
-
-Net Salary: $${(employeeData.salary || payroll?.amount || 50000) + Math.round((employeeData.salary || payroll?.amount || 50000) * 0.3) + 1920 + 1250 + 1000 - Math.round((employeeData.salary || payroll?.amount || 50000) * 0.12) - 200}
-
-Generated on: ${new Date().toLocaleString()}
-    `
-
-    alert(payslipInfo)
-  }
-
-  const updateProfile = () => {
-    if (!employeeData) return
-
-    const newName = prompt('Enter new name:', employeeData.name)
-    const newPhone = prompt('Enter new phone:', employeeData.phone || '')
-    const newAddress = prompt('Enter new address:', employeeData.address || '')
-
-    if (newName !== null || newPhone !== null || newAddress !== null) {
-      const employees = JSON.parse(localStorage.getItem("employees") || "[]")
-      const updatedEmployees = employees.map((emp: any) =>
-        emp.id === employeeData.id
-          ? {
-              ...emp,
-              name: newName || emp.name,
-              phone: newPhone || emp.phone,
-              address: newAddress || emp.address
-            }
-          : emp
-      )
-      localStorage.setItem("employees", JSON.stringify(updatedEmployees))
-
-      // Update user data too
-      const users = JSON.parse(localStorage.getItem("users") || "[]")
-      const updatedUsers = users.map((u: any) =>
-        u.email === user.email
-          ? { ...u, name: newName || u.name }
-          : u
-      )
-      localStorage.setItem("users", JSON.stringify(updatedUsers))
-
-      // Update local state
-      setEmployeeData({
-        ...employeeData,
-        name: newName || employeeData.name,
-        phone: newPhone || employeeData.phone,
-        address: newAddress || employeeData.address
-      })
-      setUser({ ...user, name: newName || user.name })
-
-      alert('Profile updated successfully!')
-    }
-  }
 
   const sendChatMessage = () => {
     if (!chatInput.trim() || !user) return
@@ -479,19 +386,19 @@ Generated on: ${new Date().toLocaleString()}
                 Mark Attendance
               </button>
               <button
-                onClick={applyLeave}
+                onClick={() => router.push("/employee-leave")}
                 className="bg-green-600 text-white p-4 rounded-lg hover:bg-green-700"
               >
                 Apply Leave
               </button>
               <button
-                onClick={viewPayslip}
+                onClick={() => router.push("/employee-payslip")}
                 className="bg-yellow-600 text-white p-4 rounded-lg hover:bg-yellow-700"
               >
                 View Payslip
               </button>
               <button
-                onClick={updateProfile}
+                onClick={() => router.push("/employee-profile")}
                 className="bg-purple-600 text-white p-4 rounded-lg hover:bg-purple-700"
               >
                 Update Profile

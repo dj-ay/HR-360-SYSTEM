@@ -185,16 +185,17 @@ export default function HRLeave() {
             ) : (
               leaveRequests.map((request) => {
                 const employee = employees.find(emp => emp.email === request.employeeEmail)
+
                 return (
                   <div key={request.id} className="bg-white shadow rounded-lg overflow-hidden">
                     <div className="px-6 py-4 border-b border-gray-200">
                       <div className="flex items-center justify-between">
                         <div>
                           <h3 className="text-lg font-medium text-gray-900">
-                            {employee?.name || request.employeeEmail}
+                            Employee: {employee?.name || request.employeeEmail} (ID: {employee?.id || 'N/A'})
                           </h3>
                           <p className="text-sm text-gray-500">
-                            {request.leaveType} • {new Date(request.startDate).toLocaleDateString()} - {new Date(request.endDate).toLocaleDateString()}
+                            {request.leaveType} • Leave Period: {new Date(request.startDate).toLocaleDateString()} - {new Date(request.endDate).toLocaleDateString()} • {request.days} days
                           </p>
                         </div>
                         <div className="flex items-center space-x-3">
@@ -207,7 +208,6 @@ export default function HRLeave() {
                           }`}>
                             {request.status}
                           </span>
-                          <span className="text-sm text-gray-500">{request.days} days</span>
                         </div>
                       </div>
                     </div>
@@ -222,6 +222,20 @@ export default function HRLeave() {
                           <dt className="text-sm font-medium text-gray-500">Applied On</dt>
                           <dd className="mt-1 text-sm text-gray-900">{new Date(request.appliedAt).toLocaleDateString()}</dd>
                         </div>
+                        <div>
+                          <dt className="text-sm font-medium text-gray-500">Number of Days</dt>
+                          <dd className="mt-1 text-sm text-gray-900">{request.days} days</dd>
+                        </div>
+                        <div>
+                          <dt className="text-sm font-medium text-gray-500">Leave Period</dt>
+                          <dd className="mt-1 text-sm text-gray-900">{new Date(request.startDate).toLocaleDateString()} - {new Date(request.endDate).toLocaleDateString()}</dd>
+                        </div>
+                        {request.detailedReason && (
+                          <div className="md:col-span-2">
+                            <dt className="text-sm font-medium text-gray-500">Detailed Reason</dt>
+                            <dd className="mt-1 text-sm text-gray-900">{request.detailedReason}</dd>
+                          </div>
+                        )}
                         {request.status !== 'Pending' && (
                           <>
                             <div>

@@ -1,0 +1,8 @@
+- [x] Enhance HR leave page to show employee name and ID for each leave request.
+- [x] Remove the previous leave history section to avoid repetition.
+- [x] Update employee leave page to include employee name and ID in the leave request data when submitting.
+- [x] Add separate fields for brief reason and detailed reason in employee leave form.
+- [x] Update HR leave page to display all leave details including brief reason, detailed reason, number of days, leave period, applied date, etc.
+- [x] Update leave request display to include both employee ID and name in the header.
+- [x] Calculate and show correct number of leave days based on start and end dates.
+- [ ] Test the updated HR leave page to ensure all information displays correctly.
