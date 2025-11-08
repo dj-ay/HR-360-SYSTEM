@@ -81,9 +81,6 @@ export default function Signup() {
     <div className="min-h-screen flex items-center justify-center bg-[url('https://wallpaperaccess.com/full/15682437.png')] bg-cover bg-center">
       <div className="w-full max-w-md p-8 bg-white rounded-lg shadow-lg">
         <h1 className="text-3xl font-bold text-center mb-8 text-slate-900">Create Account</h1>
-        <div className="flex justify-center mb-6">
-          <img src="/placeholder-logo.svg" alt="HR-360 Logo" className="w-16 h-16" />
-        </div>
 
         <form onSubmit={handleSignup} className="space-y-4">
           <div>
