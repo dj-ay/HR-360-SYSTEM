@@ -47,10 +47,10 @@ export default function CandidateDashboard() {
     if (!profileComplete) return { applications: 0, interviews: 0, offers: 0 }
 
     const profiles = JSON.parse(localStorage.getItem("candidateProfiles") || "[]")
-    const userProfile = profiles.find((p: any) => p.userId === user.email)
+    const userProfile = profiles.find((p: any) => p.userId === user?.email)
 
     const interviews = JSON.parse(localStorage.getItem("interviews") || "[]")
-    const userInterviews = interviews.filter((i: any) => i.candidateId === user.email)
+    const userInterviews = interviews.filter((i: any) => i.candidateId === user?.email)
 
     return {
       applications: userProfile ? 1 : 0,
@@ -81,9 +81,9 @@ export default function CandidateDashboard() {
               <h1 className="text-3xl font-bold text-gray-900">Candidate Dashboard</h1>
             </div>
             <div className="flex items-center space-x-4">
-              <span className="text-gray-700">Welcome, {user.name}</span>
+              <span className="text-gray-700">Welcome, {user?.name || 'User'}</span>
               <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-purple-100 text-purple-800">
-                {user.role}
+                {user?.role || 'Candidate'}
               </span>
               <button
                 onClick={() => {
@@ -247,21 +247,24 @@ export default function CandidateDashboard() {
 
           <div className="mt-8">
             <h2 className="text-2xl font-bold text-gray-900 mb-4">Quick Actions</h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               <button
                 onClick={() => router.push("/candidate-profile")}
                 className="bg-blue-600 text-white p-4 rounded-lg hover:bg-blue-700"
               >
                 {profileComplete ? 'Update Profile' : 'Complete Profile'}
               </button>
-              <button className="bg-green-600 text-white p-4 rounded-lg hover:bg-green-700">
+              <button
+                onClick={() => router.push("/browse-jobs")}
+                className="bg-green-600 text-white p-4 rounded-lg hover:bg-green-700"
+              >
                 Browse Jobs
               </button>
-              <button className="bg-yellow-600 text-white p-4 rounded-lg hover:bg-yellow-700">
+              <button
+                onClick={() => router.push("/view-applications")}
+                className="bg-yellow-600 text-white p-4 rounded-lg hover:bg-yellow-700"
+              >
                 View Applications
-              </button>
-              <button className="bg-purple-600 text-white p-4 rounded-lg hover:bg-purple-700">
-                Profile Settings
               </button>
             </div>
           </div>

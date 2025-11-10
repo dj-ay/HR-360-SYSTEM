@@ -91,102 +91,15 @@ export default function EmployeeDashboard() {
   }
 
   const applyLeave = () => {
-    if (!employeeData) return
-
-    const leaveRequest = {
-      id: Date.now(),
-      employeeId: employeeData.id,
-      employeeName: employeeData.name,
-      type: 'Casual Leave',
-      startDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
-      endDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
-      reason: 'Personal reasons',
-      status: 'Pending',
-      appliedDate: new Date().toISOString()
-    }
-
-    const allLeaveRequests = JSON.parse(localStorage.getItem("leaveRequests") || "[]")
-    allLeaveRequests.push(leaveRequest)
-    localStorage.setItem("leaveRequests", JSON.stringify(allLeaveRequests))
-
-    const updatedLeaves = [...leaveRequests, leaveRequest]
-    setLeaveRequests(updatedLeaves)
-
-    alert("Leave request submitted successfully!")
+    router.push("/employee-leave")
   }
 
   const viewPayslip = () => {
-    if (!employeeData) return
-
-    const payslipInfo = `
-PAYSLIP - ${new Date().toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}
-
-Employee: ${employeeData.name}
-Employee ID: EMP${employeeData.id}
-Department: ${employeeData.department}
-Designation: ${employeeData.designation}
-
-Basic Salary: $${employeeData.salary || payroll?.amount || 50000}
-HRA: $${Math.round((employeeData.salary || payroll?.amount || 50000) * 0.3)}
-Conveyance: $1920
-Medical: $1250
-LTA: $1000
-
-Gross Salary: $${(employeeData.salary || payroll?.amount || 50000) + Math.round((employeeData.salary || payroll?.amount || 50000) * 0.3) + 1920 + 1250 + 1000}
-
-Deductions:
-PF: $${Math.round((employeeData.salary || payroll?.amount || 50000) * 0.12)}
-Professional Tax: $200
-
-Net Salary: $${(employeeData.salary || payroll?.amount || 50000) + Math.round((employeeData.salary || payroll?.amount || 50000) * 0.3) + 1920 + 1250 + 1000 - Math.round((employeeData.salary || payroll?.amount || 50000) * 0.12) - 200}
-
-Generated on: ${new Date().toLocaleString()}
-    `
-
-    alert(payslipInfo)
+    router.push("/employee-payslip")
   }
 
   const updateProfile = () => {
-    if (!employeeData) return
-
-    const newName = prompt('Enter new name:', employeeData.name)
-    const newPhone = prompt('Enter new phone:', employeeData.phone || '')
-    const newAddress = prompt('Enter new address:', employeeData.address || '')
-
-    if (newName !== null || newPhone !== null || newAddress !== null) {
-      const employees = JSON.parse(localStorage.getItem("employees") || "[]")
-      const updatedEmployees = employees.map((emp: any) =>
-        emp.id === employeeData.id
-          ? {
-              ...emp,
-              name: newName || emp.name,
-              phone: newPhone || emp.phone,
-              address: newAddress || emp.address
-            }
-          : emp
-      )
-      localStorage.setItem("employees", JSON.stringify(updatedEmployees))
-
-      // Update user data too
-      const users = JSON.parse(localStorage.getItem("users") || "[]")
-      const updatedUsers = users.map((u: any) =>
-        u.email === user.email
-          ? { ...u, name: newName || u.name }
-          : u
-      )
-      localStorage.setItem("users", JSON.stringify(updatedUsers))
-
-      // Update local state
-      setEmployeeData({
-        ...employeeData,
-        name: newName || employeeData.name,
-        phone: newPhone || employeeData.phone,
-        address: newAddress || employeeData.address
-      })
-      setUser({ ...user, name: newName || user.name })
-
-      alert('Profile updated successfully!')
-    }
+    router.push("/employee-profile")
   }
 
   const sendChatMessage = () => {
@@ -283,9 +196,9 @@ Generated on: ${new Date().toLocaleString()}
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-blue-600 mx-auto"></div>
-        <p className="mt-4 text-gray-600">Loading...</p>
+          <p className="mt-4 text-gray-600">Loading...</p>
+        </div>
       </div>
-    </div>
     )
   }
 
@@ -342,7 +255,7 @@ Generated on: ${new Date().toLocaleString()}
 
             <div className="h-64 overflow-y-auto mb-4 p-2 border rounded">
               {chatMessages.map((msg) => (
-                <div key={msg.id} className={`mb-2 ${msg.type === 'user' ? 'text-right' : 'text-left'}`}>
+                <div key={msg.id} className={`mb-2 ${msg.type === 'user' ? 'text-right' : 'text-left'}`} >
                   <div className={`inline-block p-2 rounded-lg ${
                     msg.type === 'user' ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-800'
                   }`}>
