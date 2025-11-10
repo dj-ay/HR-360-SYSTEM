@@ -330,7 +330,7 @@ Documents would be generated as PDFs in a real application.`)
                                   ? 'bg-yellow-100 text-yellow-800'
                                   : 'bg-red-100 text-red-800'
                               }`}>
-                                {status}
+                                {status as string}
                               </span>
                               {status === 'Pending' && (
                                 <div className="flex space-x-1">

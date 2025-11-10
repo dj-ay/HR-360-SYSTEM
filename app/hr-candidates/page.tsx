@@ -147,6 +147,70 @@ export default function HRCandidates() {
     alert(`Interview scheduled for candidate ${candidateId} and notification sent!`)
   }
 
+  const handleHireCandidate = (candidateId: string) => {
+    // Generate email and password for the new employee
+    const candidate = candidates.find(c => c.userId === candidateId)
+    if (!candidate) return
+
+    // Generate random password
+    const password = Math.random().toString(36).slice(-8) + Math.random().toString(36).slice(-8)
+    const employeeEmail = candidate.email || `${candidate.name.toLowerCase().replace(/\s+/g, '.')}@company.com`
+
+    // Create employee record
+    const employee = {
+      id: Date.now(),
+      name: candidate.name,
+      email: employeeEmail,
+      password: password,
+      role: 'Employee',
+      department: 'General', // In real app, this would be assigned based on job
+      hireDate: new Date().toISOString(),
+      status: 'active',
+      createdBy: user.email
+    }
+
+    // Save employee to localStorage
+    const employees = JSON.parse(localStorage.getItem("employees") || "[]")
+    employees.push(employee)
+    localStorage.setItem("employees", JSON.stringify(employees))
+
+    // Also save to users for login
+    const users = JSON.parse(localStorage.getItem("users") || "[]")
+    users.push({
+      name: candidate.name,
+      email: employeeEmail,
+      password: password,
+      role: 'Employee'
+    })
+    localStorage.setItem("users", JSON.stringify(users))
+
+    // Update candidate status to hired
+    const updatedCandidates = candidates.map(c =>
+      c.userId === candidateId
+        ? { ...c, status: 'hired' }
+        : c
+    )
+    setCandidates(updatedCandidates)
+    localStorage.setItem("candidateProfiles", JSON.stringify(updatedCandidates))
+
+    // Send notification to candidate with login credentials
+    const notification = {
+      id: Date.now(),
+      userId: candidateId,
+      title: "Congratulations! You have been hired!",
+      message: `Welcome to the team! Your employee account has been created.\n\nLogin Credentials:\nEmail: ${employeeEmail}\nPassword: ${password}\n\nPlease login with these credentials and change your password after first login.`,
+      type: "hire",
+      createdAt: new Date().toISOString(),
+      read: false
+    }
+
+    const notifications = JSON.parse(localStorage.getItem("notifications") || "[]")
+    notifications.push(notification)
+    localStorage.setItem("notifications", JSON.stringify(notifications))
+
+    alert(`Candidate hired successfully! Login credentials sent to candidate's notification.`)
+  }
+
   if (!user) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -158,8 +222,9 @@ export default function HRCandidates() {
     )
   }
 
-  const appliedCandidates = candidates.filter(c => c.status !== 'shortlisted')
+  const appliedCandidates = candidates.filter(c => c.status !== 'shortlisted' && c.status !== 'hired')
   const shortlistedCandidates = candidates.filter(c => c.status === 'shortlisted')
+  const hiredCandidates = candidates.filter(c => c.status === 'hired')
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -198,7 +263,7 @@ export default function HRCandidates() {
       <main className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
         <div className="px-4 py-6 sm:px-0">
           {/* Stats */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
             <div className="bg-white overflow-hidden shadow rounded-lg">
               <div className="p-5">
                 <div className="flex items-center">
@@ -240,6 +305,24 @@ export default function HRCandidates() {
                 <div className="flex items-center">
                   <div className="flex-shrink-0">
                     <div className="w-8 h-8 bg-blue-500 rounded-md flex items-center justify-center">
+                      <span className="text-white text-sm font-medium">H</span>
+                    </div>
+                  </div>
+                  <div className="ml-5 w-0 flex-1">
+                    <dl>
+                      <dt className="text-sm font-medium text-gray-500 truncate">Hired</dt>
+                      <dd className="text-lg font-medium text-gray-900">{hiredCandidates.length}</dd>
+                    </dl>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="bg-white overflow-hidden shadow rounded-lg">
+              <div className="p-5">
+                <div className="flex items-center">
+                  <div className="flex-shrink-0">
+                    <div className="w-8 h-8 bg-purple-500 rounded-md flex items-center justify-center">
                       <span className="text-white text-sm font-medium">T</span>
                     </div>
                   </div>
@@ -394,7 +477,7 @@ export default function HRCandidates() {
 
           {/* Shortlisted Candidates */}
           {shortlistedCandidates.length > 0 && (
-            <div>
+            <div className="mb-8">
               <h2 className="text-2xl font-bold text-gray-900 mb-4">Shortlisted Candidates</h2>
               <div className="grid grid-cols-1 gap-6">
                 {shortlistedCandidates.map((candidate) => (
@@ -471,6 +554,88 @@ export default function HRCandidates() {
                         >
                           Schedule Interview
                         </button>
+                        <button
+                          onClick={() => handleHireCandidate(candidate.userId)}
+                          className="bg-green-600 text-white px-4 py-2 rounded-lg font-medium hover:bg-green-700"
+                        >
+                          Hire Candidate
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Hired Candidates */}
+          {hiredCandidates.length > 0 && (
+            <div>
+              <h2 className="text-2xl font-bold text-gray-900 mb-4">Hired Candidates</h2>
+              <div className="grid grid-cols-1 gap-6">
+                {hiredCandidates.map((candidate) => (
+                  <div key={candidate.userId} className="bg-white shadow rounded-lg overflow-hidden">
+                    <div className="px-6 py-4 border-b border-gray-200">
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <h3 className="text-lg font-medium text-gray-900">
+                            Candidate Application
+                          </h3>
+                          <p className="text-sm text-gray-500">{candidate.userId}</p>
+                        </div>
+                        <div className="flex items-center space-x-3">
+                          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                            Hired
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="px-6 py-4">
+                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                        <div>
+                          <dt className="text-sm font-medium text-gray-500">Phone</dt>
+                          <dd className="mt-1 text-sm text-gray-900">{candidate.phone}</dd>
+                        </div>
+                        <div>
+                          <dt className="text-sm font-medium text-gray-500">Address</dt>
+                          <dd className="mt-1 text-sm text-gray-900">{candidate.address}</dd>
+                        </div>
+                        <div>
+                          <dt className="text-sm font-medium text-gray-500">Experience</dt>
+                          <dd className="mt-1 text-sm text-gray-900">{candidate.experience} years</dd>
+                        </div>
+                        <div className="md:col-span-2 lg:col-span-3">
+                          <dt className="text-sm font-medium text-gray-500">Skills</dt>
+                          <dd className="mt-1 text-sm text-gray-900">{candidate.skills}</dd>
+                        </div>
+                        <div className="md:col-span-2 lg:col-span-3">
+                          <dt className="text-sm font-medium text-gray-500">Education</dt>
+                          <dd className="mt-1 text-sm text-gray-900">{candidate.education}</dd>
+                        </div>
+                        <div className="md:col-span-2 lg:col-span-3">
+                          <dt className="text-sm font-medium text-gray-500">Resume</dt>
+                          <dd className="mt-1 text-sm text-gray-900">
+                            {candidate.resumeName && (
+                              <a
+                                href="#"
+                                className="text-blue-600 hover:text-blue-800 underline"
+                                onClick={(e) => {
+                                  e.preventDefault()
+                                  alert(`Resume: ${candidate.resumeName} - In a real app, this would download/open the file`)
+                                }}
+                              >
+                                {candidate.resumeName}
+                              </a>
+                            )}
+                          </dd>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="px-6 py-4 bg-gray-50 border-t border-gray-200">
+                      <div className="text-sm text-gray-600">
+                        Hired on {new Date().toLocaleDateString()}
                       </div>
                     </div>
                   </div>

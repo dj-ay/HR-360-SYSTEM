@@ -57,6 +57,32 @@ def extract_experience(text):
     matches = re.findall(experience_pattern, text, re.IGNORECASE)
     return int(matches[0]) if matches else 0
 
+def extract_gpa(text):
+    """Extract GPA from text"""
+    gpa_pattern = r'(?:gpa|cgpa)\s*[:\-]?\s*(\d+\.?\d*)'
+    matches = re.findall(gpa_pattern, text, re.IGNORECASE)
+    if matches:
+        return float(matches[0])
+    return None
+
+def extract_masters(text):
+    """Check if candidate has Master's degree (complete or in progress)"""
+    masters_keywords = [
+        "master's", "masters", "m.s.", "m.sc", "m.tech", "m.e.", "mba",
+        "postgraduate", "graduate degree", "advanced degree"
+    ]
+    text_lower = text.lower()
+    for keyword in masters_keywords:
+        if keyword in text_lower:
+            # Check if it's in progress or completed
+            if any(word in text_lower for word in ["in progress", "pursuing", "current", "ongoing"]):
+                return "in_progress"
+            elif any(word in text_lower for word in ["completed", "finished", "obtained", "earned"]):
+                return "completed"
+            else:
+                return "completed"  # Assume completed if mentioned
+    return None
+
 @app.route('/parse-resume', methods=['POST'])
 def parse_resume():
     """Parse resume and extract information"""
